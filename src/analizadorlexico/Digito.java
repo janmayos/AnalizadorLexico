@@ -11,6 +11,7 @@ package analizadorlexico;
 public class Digito {
     
     private char[] digitos = {'0','1','2','3','4','5','6','7','8','9'};
+    private String digito = "";
     public Digito() {
         this.digito="";
     }
