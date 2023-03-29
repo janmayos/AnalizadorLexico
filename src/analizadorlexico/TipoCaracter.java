@@ -63,6 +63,10 @@ public class TipoCaracter {
                     return TipoToken.EXCLAMACION;
                 case "_":
                     return TipoToken.GUION_BAJO;
+                case "'":
+                    return TipoToken.COMILLA_SIMPLE;
+                case '"'+"":
+                    return TipoToken.COMILLA_DOBLE;
 
                 default:
                     System.out.println("Caracter no reconocido:'" + caracterString + "'");

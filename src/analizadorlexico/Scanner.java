@@ -1,6 +1,10 @@
 package analizadorlexico;
 
+import static analizadorlexico.TipoToken.ASTERISCO;
+import static analizadorlexico.TipoToken.COMILLA_DOBLE;
 import static analizadorlexico.TipoToken.DELIM_ESPACIO;
+import static analizadorlexico.TipoToken.DIAGONAL;
+import static analizadorlexico.TipoToken.EXCLAMACION;
 import static analizadorlexico.TipoToken.IGUAL;
 import static analizadorlexico.TipoToken.LETRA;
 import static analizadorlexico.TipoToken.MAS;
@@ -59,6 +63,8 @@ public class Scanner {
         simbolosLenguaje.put("-", TipoToken.MENOS);
         simbolosLenguaje.put("*", TipoToken.ASTERISCO);
         simbolosLenguaje.put("_", TipoToken.GUION_BAJO);
+        simbolosLenguaje.put("'", TipoToken.COMILLA_SIMPLE);
+        simbolosLenguaje.put("" + '"', TipoToken.COMILLA_DOBLE);
     }
 
     Scanner(String source) {
@@ -98,16 +104,9 @@ public class Scanner {
 /*
 
 
-                    !
-                    !=
-
-
 // -> comentarios (no se genera token)
 /* ... * / -> comentarios (no se genera token)
-Identificador,
-Cadena
-Numero
-Cada palabra reservada tiene su nombre de token
+
 
                      */
                     switch (generarTipo.getTipoCaracter()) {
@@ -133,12 +132,21 @@ Cada palabra reservada tiene su nombre de token
                         case EXCLAMACION:
                             estado = 24;
                             break;
+                        case COMILLA_DOBLE:
+                            estado = 25;
+                            break;
+                        case DIAGONAL:
+                            estado = 26;
+                            break;
                         default:
-                            if (this.simbolosLenguaje.containsKey(token.getLexema())) {
+
+                            if (this.simbolosLenguaje.containsKey(token.getLexema()) && !generarTipo.isEOF()) {
                                 token.setTipo(this.simbolosLenguaje.get(token.getLexema()));
                                 tokens.add(new Token(token));
                             } else {
-                                System.out.println("No hay match de operador");
+                                if (!generarTipo.isEOF()) {
+                                    System.out.println("No hay match de operador");
+                                }
                             }
 
                             token.limpiarToken();
@@ -376,6 +384,69 @@ Cada palabra reservada tiene su nombre de token
                             token.limpiarToken();
                             estado = 0;
                             i--;
+                            break;
+                    }
+                    break;
+                case 25:
+                    switch (generarTipo.getTipoCaracter()) {
+                        case COMILLA_DOBLE:
+                            token.addLexema(generarTipo.getCaracter());
+                            token.setTipo(TipoToken.CADENA);
+                            token.setLiteral(token.getLexema());
+                            token.setLexema(token.getLexema().replace('"' + "", ""));
+                            tokens.add(new Token(token));
+                            token.limpiarToken();
+                            estado = 0;
+                            break;
+                        default:
+                            token.addLexema(generarTipo.getCaracter());
+                            estado = 25;
+                            break;
+                    }
+                    break;
+                case 26:
+                    switch (generarTipo.getTipoCaracter()) {
+                        case DIAGONAL:
+                            estado = 27;
+                            break;
+                        case ASTERISCO:
+                            estado = 28;
+                            break;
+                        default:
+
+                            token.setLiteral(token.getLexema());
+                            token.setTipo(TipoToken.DIAGONAL);
+                            tokens.add(new Token(token));
+                            token.limpiarToken();
+                            estado = 0;
+                            i--;
+                            break;
+                    }
+                    break;
+                case 27: // 
+                    token.limpiarToken();
+                    break;
+                case 28:
+                    switch (generarTipo.getTipoCaracter()) {
+                        case ASTERISCO:
+                            estado = 29;
+                            break;
+                        default:
+                            token.limpiarToken();
+                            estado = 28;
+
+                            break;
+                    }
+                    break;
+                case 29:
+                    switch (generarTipo.getTipoCaracter()) {
+                        case DIAGONAL:
+                            estado = 0;
+                            break;
+                        default:
+                            token.limpiarToken();
+                            estado = 28;
+
                             break;
                     }
                     break;

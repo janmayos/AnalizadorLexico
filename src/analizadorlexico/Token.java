@@ -57,6 +57,11 @@ public class Token {
         
     }
 
+      public void setLexema(String caracter) {
+        
+        this.lexema = caracter;
+        
+    }
     public Object getLiteral() {
         return literal;
     }
