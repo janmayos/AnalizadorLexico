@@ -1,8 +1,13 @@
 package analizadorlexico;
 
 import static analizadorlexico.TipoToken.IGUAL;
+import static analizadorlexico.TipoToken.LETRA;
+import static analizadorlexico.TipoToken.MAS;
 import static analizadorlexico.TipoToken.MAYOR_QUE;
 import static analizadorlexico.TipoToken.MENOR_QUE;
+import static analizadorlexico.TipoToken.MENOS;
+import static analizadorlexico.TipoToken.NUMERO;
+import static analizadorlexico.TipoToken.PUNTO;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,11 +30,11 @@ public class Scanner {
         palabrasReservadas.put("ademas", TipoToken.ADEMAS);
         palabrasReservadas.put("falso", TipoToken.FALSO);
         palabrasReservadas.put("para", TipoToken.PARA);
-        palabrasReservadas.put("fun", TipoToken.FUN ); //definir funciones
-        palabrasReservadas.put("si", TipoToken.SI );
+        palabrasReservadas.put("fun", TipoToken.FUN); //definir funciones
+        palabrasReservadas.put("si", TipoToken.SI);
         palabrasReservadas.put("nulo", TipoToken.NULO);
         palabrasReservadas.put("o", TipoToken.O);
-        palabrasReservadas.put("imprimir",TipoToken.IMPRIMIR );
+        palabrasReservadas.put("imprimir", TipoToken.IMPRIMIR);
         palabrasReservadas.put("retornar", TipoToken.RETORNAR);
         palabrasReservadas.put("super", TipoToken.SUPER);
         palabrasReservadas.put("este", TipoToken.ESTE);
@@ -50,7 +55,7 @@ public class Scanner {
         y al final agregar el token de fin de archivo
          */
         reconocerToken();
-        tokens.add(new Token(TipoToken.EOF, "", null, linea+1));
+        tokens.add(new Token(TipoToken.EOF, "", null, linea + 1));
 
         return tokens;
     }
@@ -88,13 +93,16 @@ public class Scanner {
                         case LETRA:
                             estado = 10;
                             break;
+                        case NUMERO:
+                            estado = 13;
+                            break;
                         default:
                             token.limpiarToken();
                             System.out.println("No hay match de operador");
                             //System.exit(1);
                             break;
                     }
-                break;
+                    break;
                 case 1:
                     switch (generarTipo.getTipoCaracter()) {
                         case IGUAL:
@@ -123,7 +131,7 @@ public class Scanner {
                             i--;
                             break;
                     }
-                break;
+                    break;
                 case 6:
                     switch (generarTipo.getTipoCaracter()) {
                         case IGUAL:
@@ -144,28 +152,120 @@ public class Scanner {
                             i--;
                             break;
                     }
-                break;
+                    break;
                 case 10:
                     switch (generarTipo.getTipoCaracter()) {
                         case LETRA:
-                            case NUMERO:
-                                token.addLexema(generarTipo.getCaracter());
-                                estado = 10;
-                                break;
+                        case NUMERO:
+                            token.addLexema(generarTipo.getCaracter());
+                            estado = 10;
+                            break;
 
                         default:
                             estado = 11;
-                            if(this.palabrasReservadas.containsKey(token.getLexema().toLowerCase()))
+                            if (this.palabrasReservadas.containsKey(token.getLexema().toLowerCase())) {
                                 token.setTipo(this.palabrasReservadas.get(token.getLexema().toLowerCase()));
-                            else
+                            } else {
                                 token.setTipo(TipoToken.IDENTIFICADOR);
+                            }
                             tokens.add(new Token(token));
                             token.limpiarToken();
                             estado = 0;
                             i--;
                             break;
                     }
-                break;
+                    break;
+                case 13:
+                    switch (generarTipo.getTipoCaracter()) {
+                        case NUMERO:
+                            token.addLexema(generarTipo.getCaracter());
+                            estado = 13;
+                            break;
+                        case PUNTO:
+                            token.addLexema(generarTipo.getCaracter());
+                            estado = 14;
+                            break;
+                        default:
+                            estado = 20;
+                            token.setTipo(TipoToken.DIGITO);
+                            token.setLiteral(Integer.valueOf(token.getLexema()));
+                            tokens.add(new Token(token));
+                            token.limpiarToken();
+                            estado = 0;
+                            i--;
+                            break;
+                    }
+                    break;
+                case 14:
+                    switch (generarTipo.getTipoCaracter()) {
+                        case NUMERO:
+                            token.addLexema(generarTipo.getCaracter());  //Que pasa si no hay digito se genera token?
+                            estado = 15;
+                            break;
+                    }
+                    break;
+                case 15:
+                    switch (generarTipo.getTipoCaracter()) {
+                        case NUMERO:
+                            token.addLexema(generarTipo.getCaracter());
+                            estado = 15;
+                            break;
+                        case LETRA:
+                            if (generarTipo.getCaracter() == 'E') {
+                                token.addLexema(generarTipo.getCaracter());
+                                estado = 16;
+                                break;
+                            }
+                        default:
+                            estado = 21;
+                            token.setTipo(TipoToken.DIGITO_FLOTANTE);
+                            token.setLiteral(Float.valueOf(token.getLexema()));
+                            tokens.add(new Token(token));
+                            token.limpiarToken();
+                            estado = 0;
+                            i--;
+                            break;
+
+                    }
+                    break;
+                case 16:
+                    switch (generarTipo.getTipoCaracter()) {
+                        case NUMERO:
+                            token.addLexema(generarTipo.getCaracter());
+                            estado = 18;
+                            break;
+                        case MAS:
+                        case MENOS:
+                            token.addLexema(generarTipo.getCaracter());
+                            estado = 17;
+                            break;
+                    }
+                    break;
+                case 17:
+                    switch (generarTipo.getTipoCaracter()) {
+                        case NUMERO:
+                            token.addLexema(generarTipo.getCaracter());
+                            estado = 18;
+                            break;
+                    }
+                    break;
+                case 18:
+                    switch (generarTipo.getTipoCaracter()) {
+                        case NUMERO:
+                            token.addLexema(generarTipo.getCaracter());
+                            estado = 18;
+                            break;
+                        default:
+                            estado = 19;
+                            token.setTipo(TipoToken.DIGITO_EXPONENTE);
+                            token.setLiteral(token.getLexema());
+                            tokens.add(new Token(token));
+                            token.limpiarToken();
+                            estado = 0;
+                            i--;
+                            break;
+                    }
+                    break;
                 default:
                     System.out.println("No hay match de transición");
                     break;

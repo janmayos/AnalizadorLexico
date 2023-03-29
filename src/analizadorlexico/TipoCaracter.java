@@ -35,6 +35,12 @@ public class TipoCaracter {
                     return TipoToken.MAYOR_QUE;
                 case "=":
                     return TipoToken.IGUAL;
+                case ".":
+                    return TipoToken.PUNTO;
+                case "+":
+                    return TipoToken.MAS;
+                case "-":
+                    return TipoToken.MENOS;
                 default:
                     return null;
             }
