@@ -65,6 +65,10 @@ public class Scanner {
         simbolosLenguaje.put("_", TipoToken.GUION_BAJO);
         simbolosLenguaje.put("'", TipoToken.COMILLA_SIMPLE);
         simbolosLenguaje.put("" + '"', TipoToken.COMILLA_DOBLE);
+        simbolosLenguaje.put("\n", TipoToken.SALTO_LINEA);
+        simbolosLenguaje.put("\\", TipoToken.DIAGONAL_INVERTIDA);
+        simbolosLenguaje.put(":", TipoToken.DOS_PUNTOS);
+        simbolosLenguaje.put("&", TipoToken.AMPERSON);
     }
 
     Scanner(String source) {
@@ -91,24 +95,26 @@ public class Scanner {
         for (int i = 0; i <= source.length(); i++) {
             if (i != source.length()) {
                 generarTipo.setCaracter(source.charAt(i));
+                if(generarTipo.isEOF()||(int)source.charAt(i) == 13){
+                estado = 0;
+                continue;
+            }
             } else {
                 generarTipo.setFinalCaracter();
             }
-
+            //System.out.println(generarTipo.getTipoCaracter() + "  " + source.charAt(i) + " " + (int)source.charAt(i));
+            
             switch (estado) {
                 case 0:
                     token.setLinea(i);
                     token.addLexema(generarTipo.getCaracter());
                     token.setLiteral(generarTipo.getCaracter()); //Funcionalidad no encontrada aun
-                    //System.out.println(generarTipo.getTipoCaracter());
-/*
-
-
-// -> comentarios (no se genera token)
-/* ... * / -> comentarios (no se genera token)
-
-
-                     */
+                    
+                    if(generarTipo.getTipoCaracter() == null){
+                        token.limpiarToken();
+                        estado = 0;
+                        continue;
+                    }
                     switch (generarTipo.getTipoCaracter()) {
                         case MENOR_QUE:
                             estado = 1;
@@ -146,6 +152,8 @@ public class Scanner {
                             } else {
                                 if (!generarTipo.isEOF()) {
                                     System.out.println("No hay match de operador");
+                                    estado = 0;
+                                    break;
                                 }
                             }
 

@@ -23,7 +23,7 @@ public class TipoCaracter {
         if (!isEOF()) {
             String caracterString = getCaracter() + "";
             //System.out.println(caracterString);
-            if (caracterString.matches("[a-zA-Z]")) {
+            if (caracterString.matches("[a-zA-Z-áéíóúÁÉÍÓÚ]")) {
                 return TipoToken.LETRA;
             } else if (caracterString.matches("[0-9]")) {
                 return TipoToken.NUMERO;
@@ -67,7 +67,14 @@ public class TipoCaracter {
                     return TipoToken.COMILLA_SIMPLE;
                 case '"'+"":
                     return TipoToken.COMILLA_DOBLE;
-
+                case "\n":
+                    return TipoToken.SALTO_LINEA;
+                case "\\":
+                    return TipoToken.DIAGONAL_INVERTIDA;
+                case ":":
+                    return TipoToken.DOS_PUNTOS;
+                case "&":
+                    return TipoToken.AMPERSON;
                 default:
                     System.out.println("Caracter no reconocido:'" + caracterString + "'");
                     return null;
@@ -75,12 +82,6 @@ public class TipoCaracter {
 
         }
         /*
-      
-
-
-
-
-
 
 !=
 =

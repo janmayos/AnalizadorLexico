@@ -21,12 +21,15 @@ public class Interprete {
         } else if(args.length == 1){
             ejecutarArchivo(args[0]);
         } else{
-            ejecutarPrompt();
+            ejecutarArchivo("C:\\Users\\janma\\Documents\\GitHub\\AnalizadorLexico\\src\\analizadorlexico\\Scanner.java");
+            //ejecutarPrompt();
         }
     }
 
     private static void ejecutarArchivo(String path) throws IOException {
+        //System.out.println(path);
         byte[] bytes = Files.readAllBytes(Paths.get(path));
+        //System.out.println(new String(bytes, Charset.defaultCharset()));
         ejecutar(new String(bytes, Charset.defaultCharset()));
 
         // Se indica que existe un error
