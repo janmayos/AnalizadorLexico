@@ -111,6 +111,7 @@ public class Scanner {
                     token.setLiteral(generarTipo.getCaracter()); //Funcionalidad no encontrada aun
                     
                     if(generarTipo.getTipoCaracter() == null){
+                        //Caracter no reconocido no toma en cuenta
                         token.limpiarToken();
                         estado = 0;
                         continue;

@@ -21,8 +21,8 @@ public class Interprete {
         } else if(args.length == 1){
             ejecutarArchivo(args[0]);
         } else{
-            ejecutarArchivo("C:\\Users\\janma\\Documents\\GitHub\\AnalizadorLexico\\src\\analizadorlexico\\Scanner.java");
-            //ejecutarPrompt();
+            //ejecutarArchivo("C:\\Users\\janma\\Documents\\GitHub\\AnalizadorLexico\\src\\analizadorlexico\\Scanner.java");
+            ejecutarPrompt();
         }
     }
 

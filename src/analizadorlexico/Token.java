@@ -36,7 +36,7 @@ public class Token {
     }
 
     public String toString() {
-        return "Tipo: "+tipo + " Lexema: " + lexema + " Literal: " + literal + " Linea: "+linea;
+        return "Tipo: "+tipo + "\tLexema: " + lexema + "\tLiteral: " + literal + "\tLinea: "+linea;
     }
 
     public TipoToken getTipo() {
