@@ -1,5 +1,8 @@
 package analizadorlexico;
 
+import static analizadorlexico.TipoToken.IGUAL;
+import static analizadorlexico.TipoToken.MAYOR_QUE;
+import static analizadorlexico.TipoToken.MENOR_QUE;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +17,7 @@ public class Scanner {
     private int linea = 1;
 
     private static final Map<String, TipoToken> palabrasReservadas;
+
     static {
         palabrasReservadas = new HashMap<>();
         palabrasReservadas.put("y", TipoToken.Y);
@@ -34,11 +38,11 @@ public class Scanner {
         palabrasReservadas.put("mientras", );*/
     }
 
-    Scanner(String source){
+    Scanner(String source) {
         this.source = source;
     }
 
-    List<Token> scanTokens(){
+    List<Token> scanTokens() {
         //Aquí va el corazón del scanner.
 
         /*
@@ -50,35 +54,110 @@ public class Scanner {
 
         return tokens;
     }
-    
-    Token reconocerToken(){
-        Digito digito = new Digito();
-        boolean ban = false;
-        System.out.println(this.source);
-        for (int i = 0; i < source.length(); i++){
-            char c = source.charAt(i);        
-    
-            
-            System.out.println(c);
-            if(digito.isdigit(c)){
-                
-                digito.addChar(c);
-            }else{
-                ban=true;
-                
+
+    Token reconocerToken() {
+        int estado = 0;
+        TipoCaracter generarTipo = new TipoCaracter();
+        Token token = new Token();
+        for (int i = 0; i <= source.length(); i++) {
+            if (i != source.length()) {
+                generarTipo.setCaracter(source.charAt(i));
+            } else {
+                generarTipo.setFinalCaracter();
             }
-           
+            switch (estado) {
+                case 0:
+                    token.setLinea(i);
+                    token.setLexema(generarTipo.getCaracter());
+                    token.setLiteral(generarTipo.getCaracter()); //Funcionalidad no encontrada aun
+                    //System.out.println(generarTipo.getTipoCaracter());
+                    switch (generarTipo.getTipoCaracter()) {
+                        case MENOR_QUE:
+                            estado = 1;
+                            break;
+                        case IGUAL:
+                            estado = 5;
+                            token.setTipo(TipoToken.EQ);
+                            tokens.add(new Token(token));
+                            token.limpiarToken();
+                            estado = 0;
+                            break;
+                        case MAYOR_QUE:
+                            estado = 6;
+                            break;
+                        default:
+                            token.limpiarToken();
+                            System.out.println("No hay match de operador");
+                            //System.exit(1);
+                            break;
+                    }
+                break;
+                case 1:
+                    switch (generarTipo.getTipoCaracter()) {
+                        case IGUAL:
+                            estado = 2;
+                            token.setLexema(generarTipo.getCaracter());
+                            token.setTipo(TipoToken.LE);
+                            tokens.add(new Token(token));
+                            token.limpiarToken();
+                            estado = 0;
+                            break;
+                        case MAYOR_QUE:
+                            estado = 3;
+                            token.setLexema(generarTipo.getCaracter());
+                            token.setTipo(TipoToken.NE);
+                            tokens.add(new Token(token));
+                            token.limpiarToken();
+                            estado = 0;
+
+                            break;
+                        default:
+                            estado = 4;
+                            token.setTipo(TipoToken.LT);
+                            tokens.add(new Token(token));
+                            token.limpiarToken();
+                            estado = 0;
+                            i--;
+                            break;
+                    }
+                break;
+                case 6:
+                    switch (generarTipo.getTipoCaracter()) {
+                        case IGUAL:
+                            estado = 7;
+                            token.setLexema(generarTipo.getCaracter());
+                            token.setTipo(TipoToken.GE);
+                            tokens.add(new Token(token));
+                            token.limpiarToken();
+                            estado = 0;
+                            break;
+
+                        default:
+                            estado = 8;
+                            token.setTipo(TipoToken.GT);
+                            tokens.add(new Token(token));
+                            token.limpiarToken();
+                            estado = 0;
+                            i--;
+                            break;
+                    }
+                break;
+                default:
+                    System.out.println("No hay match de transición");
+                    break;
+            }
+            System.out.println(generarTipo.isEOF());
+            if (generarTipo.isEOF()) {
+                break;
+            }
         }
-         if(ban){
-                tokens.add(new Token(TipoToken.NUMERO, digito.toString(), null, linea));
-                ban = false;
-            }
+        //if(ban){
+        //     tokens.add(new Token(TipoToken.NUMERO, digito.toString(), null, linea));
+        //   ban = false;
+        //}
         return null;
     }
-    
-    
-    
-    
+
 }
 
 /*
