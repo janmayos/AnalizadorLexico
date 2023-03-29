@@ -22,20 +22,20 @@ public class Scanner {
         palabrasReservadas = new HashMap<>();
         palabrasReservadas.put("y", TipoToken.Y);
         palabrasReservadas.put("clase", TipoToken.CLASE);
-        /*palabrasReservadas.put("ademas", );
-        palabrasReservadas.put("falso", );
-        palabrasReservadas.put("para", );
-        palabrasReservadas.put("fun", ); //definir funciones
-        palabrasReservadas.put("si", );
-        palabrasReservadas.put("nulo", );
-        palabrasReservadas.put("o", );
-        palabrasReservadas.put("imprimir", );
-        palabrasReservadas.put("retornar", );
-        palabrasReservadas.put("super", );
-        palabrasReservadas.put("este", );
-        palabrasReservadas.put("verdadero", );
-        palabrasReservadas.put("var", ); //definir variables
-        palabrasReservadas.put("mientras", );*/
+        palabrasReservadas.put("ademas", TipoToken.ADEMAS);
+        palabrasReservadas.put("falso", TipoToken.FALSO);
+        palabrasReservadas.put("para", TipoToken.PARA);
+        palabrasReservadas.put("fun", TipoToken.FUN ); //definir funciones
+        palabrasReservadas.put("si", TipoToken.SI );
+        palabrasReservadas.put("nulo", TipoToken.NULO);
+        palabrasReservadas.put("o", TipoToken.O);
+        palabrasReservadas.put("imprimir",TipoToken.IMPRIMIR );
+        palabrasReservadas.put("retornar", TipoToken.RETORNAR);
+        palabrasReservadas.put("super", TipoToken.SUPER);
+        palabrasReservadas.put("este", TipoToken.ESTE);
+        palabrasReservadas.put("verdadero", TipoToken.VERDADERO);
+        palabrasReservadas.put("var", TipoToken.VAR); //definir variables
+        palabrasReservadas.put("mientras", TipoToken.MIENTRAS);
     }
 
     Scanner(String source) {
@@ -50,7 +50,7 @@ public class Scanner {
         y al final agregar el token de fin de archivo
          */
         reconocerToken();
-        tokens.add(new Token(TipoToken.EOF, "", null, linea));
+        tokens.add(new Token(TipoToken.EOF, "", null, linea+1));
 
         return tokens;
     }
@@ -68,7 +68,7 @@ public class Scanner {
             switch (estado) {
                 case 0:
                     token.setLinea(i);
-                    token.setLexema(generarTipo.getCaracter());
+                    token.addLexema(generarTipo.getCaracter());
                     token.setLiteral(generarTipo.getCaracter()); //Funcionalidad no encontrada aun
                     //System.out.println(generarTipo.getTipoCaracter());
                     switch (generarTipo.getTipoCaracter()) {
@@ -85,6 +85,9 @@ public class Scanner {
                         case MAYOR_QUE:
                             estado = 6;
                             break;
+                        case LETRA:
+                            estado = 10;
+                            break;
                         default:
                             token.limpiarToken();
                             System.out.println("No hay match de operador");
@@ -96,7 +99,7 @@ public class Scanner {
                     switch (generarTipo.getTipoCaracter()) {
                         case IGUAL:
                             estado = 2;
-                            token.setLexema(generarTipo.getCaracter());
+                            token.addLexema(generarTipo.getCaracter());
                             token.setTipo(TipoToken.LE);
                             tokens.add(new Token(token));
                             token.limpiarToken();
@@ -104,7 +107,7 @@ public class Scanner {
                             break;
                         case MAYOR_QUE:
                             estado = 3;
-                            token.setLexema(generarTipo.getCaracter());
+                            token.addLexema(generarTipo.getCaracter());
                             token.setTipo(TipoToken.NE);
                             tokens.add(new Token(token));
                             token.limpiarToken();
@@ -125,7 +128,7 @@ public class Scanner {
                     switch (generarTipo.getTipoCaracter()) {
                         case IGUAL:
                             estado = 7;
-                            token.setLexema(generarTipo.getCaracter());
+                            token.addLexema(generarTipo.getCaracter());
                             token.setTipo(TipoToken.GE);
                             tokens.add(new Token(token));
                             token.limpiarToken();
@@ -142,11 +145,32 @@ public class Scanner {
                             break;
                     }
                 break;
+                case 10:
+                    switch (generarTipo.getTipoCaracter()) {
+                        case LETRA:
+                            case NUMERO:
+                                token.addLexema(generarTipo.getCaracter());
+                                estado = 10;
+                                break;
+
+                        default:
+                            estado = 11;
+                            if(this.palabrasReservadas.containsKey(token.getLexema().toLowerCase()))
+                                token.setTipo(this.palabrasReservadas.get(token.getLexema().toLowerCase()));
+                            else
+                                token.setTipo(TipoToken.IDENTIFICADOR);
+                            tokens.add(new Token(token));
+                            token.limpiarToken();
+                            estado = 0;
+                            i--;
+                            break;
+                    }
+                break;
                 default:
                     System.out.println("No hay match de transición");
                     break;
             }
-            System.out.println(generarTipo.isEOF());
+            //System.out.println(generarTipo.isEOF());
             if (generarTipo.isEOF()) {
                 break;
             }

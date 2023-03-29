@@ -36,7 +36,7 @@ public class Token {
     }
 
     public String toString() {
-        return tipo + " " + lexema + " " + literal + " "+linea;
+        return "Tipo: "+tipo + " Lexema: " + lexema + " Literal: " + literal + " Linea: "+linea;
     }
 
     public TipoToken getTipo() {
@@ -51,8 +51,10 @@ public class Token {
         return lexema;
     }
 
-    public void setLexema(char caracter) {
+    public void addLexema(char caracter) {
+        
         this.lexema = lexema + caracter;
+        
     }
 
     public Object getLiteral() {

@@ -10,7 +10,7 @@ public enum TipoToken {
     LE, NE, LT, EQ, GE, GT,
     MENOR_QUE,IGUAL,MAYOR_QUE,
     // Palabras clave:
-    Y, CLASE,
+    Y, CLASE,ADEMAS,FALSO,PARA,FUN,SI,NULO,O,IMPRIMIR,RETORNAR,SUPER,ESTE,VERDADERO,VAR,MIENTRAS,
 
     // Final de cadena
     EOF
