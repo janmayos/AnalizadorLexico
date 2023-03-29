@@ -22,7 +22,7 @@ public class TipoCaracter {
 
         if (!isEOF()) {
             String caracterString = getCaracter() + "";
-            System.out.println(caracterString);
+            //System.out.println(caracterString);
             if (caracterString.matches("[a-zA-Z]")) {
                 return TipoToken.LETRA;
             } else if (caracterString.matches("[0-9]")) {
@@ -41,12 +41,50 @@ public class TipoCaracter {
                     return TipoToken.MAS;
                 case "-":
                     return TipoToken.MENOS;
+                case " ":
+                    return TipoToken.DELIM_ESPACIO;
+                case "(":
+                    return TipoToken.PARENTESIS_ABRE;
+                case ")":
+                    return TipoToken.PARENTESIS_CIERRA;
+                case "{":
+                    return TipoToken.LLAVE_ABRE;
+                case "}":
+                    return TipoToken.LLAVE_CIERRA;
+                case ",":
+                    return TipoToken.COMA;
+                case ";":
+                    return TipoToken.PUNTO_COMA;
+                case "*":
+                    return TipoToken.ASTERISCO;
+                case "/":
+                    return TipoToken.DIAGONAL;
+                case "!":
+                    return TipoToken.EXCLAMACION;
+                case "_":
+                    return TipoToken.GUION_BAJO;
+
                 default:
+                    System.out.println("Caracter no reconocido:'" + caracterString + "'");
                     return null;
             }
 
         }
+        /*
+      
 
+
+
+
+
+
+!=
+=
+==
+<
+<=
+>
+>=*/
         return TipoToken.EOF;
     }
 
