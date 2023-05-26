@@ -13,6 +13,7 @@ import static analizadorlexico.TipoToken.MENOR_QUE;
 import static analizadorlexico.TipoToken.MENOS;
 import static analizadorlexico.TipoToken.NUMERO;
 import static analizadorlexico.TipoToken.PUNTO;
+import static analizadorlexico.TipoToken.SALTO_LINEA;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -90,8 +91,10 @@ public class Scanner {
 
     Token reconocerToken() {
         int estado = 0;
+        int linea = 1;
         TipoCaracter generarTipo = new TipoCaracter();
         Token token = new Token();
+        
         for (int i = 0; i <= source.length(); i++) {
             if (i != source.length()) {
                 generarTipo.setCaracter(source.charAt(i));
@@ -106,7 +109,7 @@ public class Scanner {
             
             switch (estado) {
                 case 0:
-                    token.setLinea(i);
+                    token.setLinea(linea);
                     token.addLexema(generarTipo.getCaracter());
                     token.setLiteral(generarTipo.getCaracter()); //Funcionalidad no encontrada aun
                     
@@ -149,7 +152,13 @@ public class Scanner {
 
                             if (this.simbolosLenguaje.containsKey(token.getLexema()) && !generarTipo.isEOF()) {
                                 token.setTipo(this.simbolosLenguaje.get(token.getLexema()));
-                                tokens.add(new Token(token));
+                                if(token.getTipo() == SALTO_LINEA){
+                                    linea++;
+                                    System.out.println("Es salto de linea");
+                                    //System.exit(1);
+                                }else{
+                                    tokens.add(new Token(token));
+                                }
                             } else {
                                 if (!generarTipo.isEOF()) {
                                     System.out.println("No hay match de operador");
@@ -362,14 +371,16 @@ public class Scanner {
                 case 23:
                     switch (generarTipo.getTipoCaracter()) {
                         case DELIM_ESPACIO:
-                            token.addLexema(generarTipo.getCaracter());
+                            //El espacio no genera token
+                            //token.addLexema(generarTipo.getCaracter());
                             estado = 23;
                             break;
                         default:
                             estado = 24;
-                            token.setTipo(TipoToken.DELIM_ESPACIO);
-                            token.setLiteral(token.getLexema());
-                            tokens.add(new Token(token));
+                            //El espacio o tabulación no es valido para la generación de tokens
+                            //token.setTipo(TipoToken.DELIM_ESPACIO);
+                            //token.setLiteral(token.getLexema());
+                            //tokens.add(new Token(token));
                             token.limpiarToken();
                             estado = 0;
                             i--;
