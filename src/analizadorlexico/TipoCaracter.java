@@ -77,6 +77,7 @@ public class TipoCaracter {
                     return TipoToken.AMPERSON;
                 default:
                     System.out.println("Caracter no reconocido:'" + caracterString + "'");
+                    
                     return null;
             }
 

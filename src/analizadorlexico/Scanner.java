@@ -98,21 +98,21 @@ public class Scanner {
         for (int i = 0; i <= source.length(); i++) {
             if (i != source.length()) {
                 generarTipo.setCaracter(source.charAt(i));
-                if (generarTipo.isEOF() ){//|| (int) source.charAt(i) == 13) {
+                if (generarTipo.isEOF()){ // || (int) source.charAt(i) == 13) {
                     
                     estado = 0;
                     continue;
                 }else if((int)source.charAt(i) == 13){
                     continue;
-                }else{
-                    System.out.println("aqui");
                 }
             } else {
                 generarTipo.setFinalCaracter();
             }
-            //System.out.println(generarTipo.getCaracter());  Caracter que recorre
-            //System.out.println(generarTipo.getTipoCaracter() + "  " + source.charAt(i) + " " + (int)source.charAt(i));
-
+            //System.out.println(generarTipo.getCaracter());  //Caracter que recorre
+            //System.out.println(generarTipo.getTipoCaracter() + "  " + source.charAt(i) + " " + (int)source.charAt(i)+ " linea:"+numerolinea);
+             if (generarTipo.getTipoCaracter() == null) {
+                        System.exit(0);
+            }
             switch (estado) {
                 case 0:
                     token.setLinea(numerolinea);

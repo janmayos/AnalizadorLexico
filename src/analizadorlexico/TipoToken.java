@@ -17,7 +17,8 @@ public enum TipoToken {
     //DELIM
      DELIM_ESPACIO,
     // Final de cadena
-    EOF, SALTO_LINEA, DIAGONAL_INVERTIDA, DOS_PUNTOS, AMPERSON
-    
+    EOF, SALTO_LINEA, DIAGONAL_INVERTIDA, DOS_PUNTOS, AMPERSON,
+    //Sin definir
+    SIN_DEFINIR
     
 }
