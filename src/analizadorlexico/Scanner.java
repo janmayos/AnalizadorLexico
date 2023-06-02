@@ -91,29 +91,35 @@ public class Scanner {
 
     Token reconocerToken() {
         int estado = 0;
-        int linea = 1;
+        int numerolinea = 1;
         TipoCaracter generarTipo = new TipoCaracter();
         Token token = new Token();
-        
+
         for (int i = 0; i <= source.length(); i++) {
             if (i != source.length()) {
                 generarTipo.setCaracter(source.charAt(i));
-                if(generarTipo.isEOF()||(int)source.charAt(i) == 13){
-                estado = 0;
-                continue;
-            }
+                if (generarTipo.isEOF() ){//|| (int) source.charAt(i) == 13) {
+                    
+                    estado = 0;
+                    continue;
+                }else if((int)source.charAt(i) == 13){
+                    continue;
+                }else{
+                    System.out.println("aqui");
+                }
             } else {
                 generarTipo.setFinalCaracter();
             }
+            //System.out.println(generarTipo.getCaracter());  Caracter que recorre
             //System.out.println(generarTipo.getTipoCaracter() + "  " + source.charAt(i) + " " + (int)source.charAt(i));
-            
+
             switch (estado) {
                 case 0:
-                    token.setLinea(linea);
+                    token.setLinea(numerolinea);
                     token.addLexema(generarTipo.getCaracter());
                     token.setLiteral(generarTipo.getCaracter()); //Funcionalidad no encontrada aun
-                    
-                    if(generarTipo.getTipoCaracter() == null){
+
+                    if (generarTipo.getTipoCaracter() == null) {
                         //Caracter no reconocido no toma en cuenta
                         token.limpiarToken();
                         estado = 0;
@@ -152,11 +158,11 @@ public class Scanner {
 
                             if (this.simbolosLenguaje.containsKey(token.getLexema()) && !generarTipo.isEOF()) {
                                 token.setTipo(this.simbolosLenguaje.get(token.getLexema()));
-                                if(token.getTipo() == SALTO_LINEA){
-                                    linea++;
+                                if (token.getTipo() == SALTO_LINEA) {
+                                    numerolinea++;
                                     System.out.println("Es salto de linea");
                                     //System.exit(1);
-                                }else{
+                                } else {
                                     tokens.add(new Token(token));
                                 }
                             } else {
@@ -445,6 +451,12 @@ public class Scanner {
                     break;
                 case 27: // 
                     token.limpiarToken();
+                    switch (generarTipo.getTipoCaracter()) {
+                        case SALTO_LINEA:
+                            estado = 0;
+                            break;
+                    }
+
                     break;
                 case 28:
                     switch (generarTipo.getTipoCaracter()) {
@@ -454,13 +466,13 @@ public class Scanner {
                         default:
                             token.limpiarToken();
                             estado = 28;
-
                             break;
                     }
                     break;
                 case 29:
                     switch (generarTipo.getTipoCaracter()) {
                         case DIAGONAL:
+                            token.limpiarToken();
                             estado = 0;
                             break;
                         default:

@@ -22,6 +22,8 @@ public class Interprete {
             ejecutarArchivo(args[0]);
         } else{
             ejecutarArchivo("C:\\Users\\janma\\Documents\\GitHub\\AnalizadorLexico\\src\\analizadorlexico\\Scanner.java");
+            //ejecutarArchivo("C:\\Prueba.txt");
+
             //ejecutarPrompt();
         }
     }
